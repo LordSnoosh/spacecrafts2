@@ -36,6 +36,13 @@ class Craft(models.Model):
     condition = models.CharField(max_length=100, choices = CONDITION, default = GOOD)
     description = models.TextField(max_length=1000)
     mileage = models.IntegerField()
-
+    date_created = models.DateTimeField(editable=False)
+    
     def __str__(self): 
         return self.name
+
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.date_created = timezone.now()
+        return super(User, self).save(*args, **kwargs)
