@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 class Craft(models.Model):
@@ -14,7 +15,7 @@ class Craft(models.Model):
     name = models.CharField(max_length=100)
     passengers = models.IntegerField()
     hyperdrive_rating = models.FloatField()
-    url = models.CharField(max_length=100)
+    url = models.CharField(max_length=100, default=None)
     # may or may not exist
     vehicle_class = models.CharField(max_length=100)
     starship_class = models.CharField(max_length=100)
@@ -36,13 +37,9 @@ class Craft(models.Model):
     condition = models.CharField(max_length=100, choices = CONDITION, default = GOOD)
     description = models.TextField(max_length=1000)
     mileage = models.IntegerField()
-    date_created = models.DateTimeField(editable=False)
-    
-    def __str__(self): 
+
+    def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        ''' On save, update timestamps '''
-        if not self.id:
-            self.date_created = timezone.now()
-        return super(User, self).save(*args, **kwargs)
+    def get_absolute_url(self):
+        return reverse('detail', kwargs={'craft_id': self.id})
